@@ -1,0 +1,27 @@
+node {
+    stage('Checkout') {
+        checkout scm
+    }
+    
+    stage('Install Dependencies') {
+        echo 'Installing dependencies...'
+        dir('backend') { bat 'npm install' }
+        dir('frontend') { bat 'npm install' }
+    }
+    
+    stage('Build Frontend') {
+        echo 'Building the frontend...'
+        dir('frontend') { bat 'npm run build' }
+    }
+    
+    stage('Run Tests') {
+        echo 'Executing backend tests...'
+        dir('backend') { bat 'npm test -- --passWithNoTests' }
+    }
+    
+    stage('Notification') {
+        if (currentBuild.result == 'SUCCESS') {
+            echo 'Build Passed successfully!'
+        }
+    }
+}
