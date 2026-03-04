@@ -29,5 +29,13 @@
             <version>7.9.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- WebDriverManager (auto downloads ChromeDriver) -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.8.0</version>
+        </dependency>
+
     </dependencies>
 </project>
