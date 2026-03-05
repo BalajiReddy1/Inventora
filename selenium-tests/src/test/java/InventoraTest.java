@@ -35,20 +35,18 @@ public class InventoraTest {
         String body = "{\"email\":\"wrong@test.com\",\"password\":\"wrongpass\"}";
         conn.getOutputStream().write(body.getBytes());
         int responseCode = conn.getResponseCode();
-        System.out.println("Login API response code: " + responseCode);
-
-        Assert.assertTrue(responseCode == 401 || responseCode == 400 || responseCode == 200 || responseCode == 500,
-                "Login with invalid credentials should return a valid error response");
+        Assert.assertTrue(responseCode == 401 || responseCode == 400,
+                "Login with invalid credentials should return 401 or 400");
         conn.disconnect();
     }
-    
+
     // ========== DEVELOPER B TESTS (Frontend UI - Selenium) ==========
+
     @BeforeClass
     public void setup() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.addArguments("--no-sandbox");
-        io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver(options);
     }
 
@@ -65,13 +63,9 @@ public class InventoraTest {
     @Test(priority = 4)
     public void testDashboardRedirectsWithoutAuth() {
         driver.get("http://localhost:5173/dashboard");
-
-        String title = driver.getTitle();
-
-        Assert.assertTrue(
-            title.contains("Inventora"),
-            "Application should load correctly"
-        );
+        String currentUrl = driver.getCurrentUrl();
+        Assert.assertTrue(currentUrl.contains("/login"),
+                "Accessing /dashboard without login should redirect to /login");
     }
 
     @AfterClass
@@ -80,7 +74,4 @@ public class InventoraTest {
             driver.quit();
         }
     }
-    
-
-
 }
