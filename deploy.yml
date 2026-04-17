@@ -1,0 +1,29 @@
+---
+- name: Continuous Deployment for Inventora Project
+  hosts: webserver
+  become: yes
+
+  tasks:
+    - name: Ensure Docker is installed
+      apt:
+        name: docker.io
+        state: present
+        update_cache: no
+
+    - name: Create project directory
+      file:
+        path: /var/www/inventora
+        state: directory
+        mode: '0755'
+
+    - name: Copy FULL project files to server
+      git:
+        repo: 'https://github.com/BalajiReddy1/Inventora.git'
+        dest: /var/www/inventora
+        force: yes
+
+    - name: Build and Run Project Containers
+      shell: |
+        cd /var/www/inventora
+        docker-compose down --remove-orphans
+        docker-compose up -d --build
